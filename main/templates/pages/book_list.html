@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}کتاب‌ها{% endblock %}
+
+{% block content %}
+<h2>لیست کتاب‌ها</h2>
+
+<div class="book-grid">
+    {% for book in books %}
+    <div class="book-card">
+        <img src="{{ book.cover.url }}">
+        <h3>{{ book.title }}</h3>
+        <p class="price">{{ book.price }} تومان</p>
+        <a href="/books/{{ book.id }}/">مشاهده</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

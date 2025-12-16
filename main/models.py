@@ -2,8 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -28,7 +27,7 @@ class Address(models.Model):
     is_default = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.street}, {self.city}, {self.country}"
+        return f"{self.country}, {self.city}, {self.street}"
 
 
 class Publisher(models.Model):
@@ -47,103 +46,106 @@ class Author(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-    
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
-    
+
 
 class Book(models.Model):
     title = models.CharField(max_length=150)
+    cover = models.ImageField(upload_to='books/', blank=True, null=True)
     ISBN = models.CharField(max_length=20, unique=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.PositiveIntegerField(help_text="قیمت به تومان")
     stock_quantity = models.PositiveIntegerField()
     description = models.TextField(blank=True, null=True)
     publication_date = models.DateField(blank=True, null=True)
-    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE, related_name= 'books')
-    authors = models.ManyToManyField(Author, related_name='books')
-    categories = models.ManyToManyField(Category, related_name='books')
+    publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+    authors = models.ManyToManyField(Author)
+    categories = models.ManyToManyField(Category)
+    admin = models.ForeignKey(Admin, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title
 
 
 class Review(models.Model):
-    rating = models.PositiveSmallIntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    rating = models.IntegerField()
     comment = models.TextField(blank=True, null=True)
     review_date = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name='reviews')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name= 'reviews')
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cart_items')
-    book = models. ForeignKey(Book, on_delete=models.CASCADE, related_name='cart_items')
-    quantity = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
 
     class Meta:
-        unique_together=('user','book')
-
+        unique_together = ('user', 'book')
 
 
 class Wishlist(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlists')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='wishlists')
-    added_date = models. DateField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    added_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together=('user','book')
-
-
+        unique_together = ('user', 'book')
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    STATUS_CHOICES = [
+        ('pending', 'در انتظار پرداخت'),
+        ('paid', 'پرداخت شده'),
+        ('shipped', 'ارسال شده'),
+        ('delivered', 'تحویل داده شده'),
+        ('canceled', 'لغو شده'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=30)
+    admin = models.ForeignKey(Admin, on_delete=models.CASCADE, null=True, blank=True)
+    total_amount = models.PositiveIntegerField(help_text="مبلغ کل به تومان")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     order_date = models.DateTimeField(auto_now_add=True)
 
 
-
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='order_items')
-    quantity = models.IntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-
-    class Meta:
-        unique_together = ('order', 'book')
-
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    unit_price = models.PositiveIntegerField(help_text="قیمت واحد به تومان")
 
 
 class Payment(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=50)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.PositiveIntegerField(help_text="مبلغ پرداخت به تومان")
     transaction_status = models.CharField(max_length=30)
     payment_date = models.DateTimeField(auto_now_add=True)
 
 
-
 class Support(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='supports')
-    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True, related_name='supports')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
     subject = models.CharField(max_length=150)
-    message = models.CharField(max_length=255)
+    message = models.TextField()
     status = models.CharField(max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
-    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True, related_name='notifications')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
     message = models.CharField(max_length=255)
     type = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+
 
 
