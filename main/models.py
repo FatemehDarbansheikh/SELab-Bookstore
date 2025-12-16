@@ -120,6 +120,9 @@ class OrderItem(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     unit_price = models.PositiveIntegerField(help_text="قیمت واحد به تومان")
+    
+    class Meta:
+        unique_together = ('order', 'book')
 
 
 class Payment(models.Model):
