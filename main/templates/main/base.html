@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}کتاب‌ فروشی{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@latest/dist/font-face.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="container header-content">
+
+        <a href="{% url 'home' %}" class="logo">
+            📚 کتاب‌ فروشی
+        </a>
+
+        <nav class="nav">
+            <a href="{% url 'book_list' %}">کتاب‌ها</a>
+            <a href="{% url 'cart' %}">سبد خرید</a>
+            <a href="{% url 'wishlist' %}">علاقه‌مندی‌ها</a>
+        </nav>
+
+        <div class="auth">
+            {% if user.is_authenticated %}
+                <span class="username">سلام {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-outline">خروج</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline">ورود</a>
+                <a href="{% url 'signup' %}" class="btn btn-primary">ثبت‌ نام</a>
+            {% endif %}
+        </div>
+
+    </div>
+</header>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main class="main">
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer-content">
+        <p>© 1404 | پروژه وب اپلیکیشن کتاب‌ فروشی</p>
+    </div>
+</footer>
+
+</body>
+</html>

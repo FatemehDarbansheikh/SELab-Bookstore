@@ -1,0 +1,209 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Vazirmatn, sans-serif;
+}
+
+body {
+    background-color: #f6f7fb;
+    color: #333;
+    line-height: 1.8;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 15px 0;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #4f46e5;
+}
+
+.nav a {
+    margin: 0 10px;
+    font-size: 15px;
+    color: #444;
+}
+
+.nav a:hover {
+    color: #4f46e5;
+}
+
+.auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.username {
+    font-size: 14px;
+    color: #555;
+}
+
+.btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-primary {
+    background-color: #4f46e5;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #4338ca;
+}
+
+.btn-outline {
+    border: 1px solid #4f46e5;
+    color: #4f46e5;
+}
+
+.btn-outline:hover {
+    background-color: #4f46e5;
+    color: #fff;
+}
+
+.messages {
+    width: 90%;
+    max-width: 1200px;
+    margin: 15px auto;
+}
+
+.message {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.message.error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.message.success {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.main {
+    padding: 40px 0;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.book-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+}
+
+.book-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.book-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.book-price {
+    color: #16a34a;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.form-box {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.form-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-box input,
+.form-box select,
+.form-box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.form-box button {
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f1f5f9;
+}
+
+.footer {
+    background-color: #ffffff;
+    border-top: 1px solid #e6e6e6;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}

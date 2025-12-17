@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+پروفایل کاربری
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">پروفایل من</h2>
+
+<div style="display:grid; grid-template-columns: 1fr 2fr; gap:30px;">
+
+    <div style="background:#fff; padding:20px; border-radius:12px;">
+        <h3 style="margin-bottom:10px;">اطلاعات حساب</h3>
+
+        <p><strong>نام کاربری:</strong> {{ user.username }}</p>
+        <p><strong>ایمیل:</strong> {{ user.email }}</p>
+        <p><strong>شماره تماس:</strong> {{ user.phone|default:"—" }}</p>
+        <p><strong>تاریخ عضویت:</strong> {{ user.date_joined|date:"Y/m/d" }}</p>
+
+        <a href="#" class="btn btn-outline" style="margin-top:15px;">
+            ویرایش اطلاعات
+        </a>
+    </div>
+
+    <div style="background:#fff; padding:20px; border-radius:12px;">
+        <h3 style="margin-bottom:10px;">آدرس‌های من</h3>
+
+        {% if user.addresses.all %}
+            <ul style="padding-right:20px;">
+                {% for address in user.addresses.all %}
+                    <li style="margin-bottom:10px;">
+                        {{ address.country }}،
+                        {{ address.city }}،
+                        {{ address.street }}
+                        {% if address.is_default %}
+                            <span style="color:#16a34a;">(پیش‌ فرض)</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>آدرسی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

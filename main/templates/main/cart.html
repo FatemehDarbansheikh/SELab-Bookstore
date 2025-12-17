@@ -1,0 +1,53 @@
+{% extends 'main/base.html' %}
+{% load math_filters %}
+
+{% block title %}
+سبد خرید | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">سبد خرید</h2>
+
+{% if cart_items %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>کتاب</th>
+            <th>قیمت واحد</th>
+            <th>تعداد</th>
+            <th>قیمت کل</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.book.title }}</td>
+            <td>{{ item.book.price }} تومان</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.book.price|multiply:item.quantity }} تومان</td>
+            <td>
+                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-outline">
+                    حذف
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top:20px; text-align:left;">
+    <strong>مبلغ نهایی:</strong>
+    {{ total_price }} تومان
+</div>
+
+<a href="{% url 'checkout' %}" class="btn btn-primary" style="margin-top:20px;">
+    ادامه فرآیند خرید
+</a>
+
+{% else %}
+<p>سبد خرید شما خالی است.</p>
+{% endif %}
+
+{% endblock %}

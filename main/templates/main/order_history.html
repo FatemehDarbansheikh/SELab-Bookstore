@@ -1,0 +1,43 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+سفارش‌های من | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">سفارش‌های من</h2>
+
+{% if orders %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>شماره سفارش</th>
+            <th>تاریخ</th>
+            <th>مبلغ کل</th>
+            <th>وضعیت</th>
+            <th>جزئیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.order_date|date:"Y/m/d" }}</td>
+            <td>{{ order.total_amount }} تومان</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>
+                <a href="{% url 'order_detail' order.id %}"
+                   class="btn btn-outline">
+                    مشاهده
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>هیچ سفارشی ثبت نشده است.</p>
+{% endif %}
+
+{% endblock %}

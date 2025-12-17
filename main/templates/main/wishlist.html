@@ -1,0 +1,49 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+علاقه‌مندی‌ها | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">علاقه‌مندی‌های من</h2>
+
+{% if items %}
+    <div class="book-grid">
+        {% for item in items %}
+            <div class="book-card">
+
+                {% if item.book.cover %}
+                    <img src="{{ item.book.cover.url }}" alt="{{ item.book.title }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x400?text=Book">
+                {% endif %}
+
+                <div class="book-title">
+                    {{ item.book.title }}
+                </div>
+
+                <div class="book-price">
+                    {{ item.book.price }} تومان
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a href="{% url 'book_detail' item.book.id %}"
+                       class="btn btn-primary">
+                        مشاهده
+                    </a>
+
+                    <a href="{% url 'remove_from_wishlist' item.id %}"
+                       class="btn btn-outline">
+                        حذف
+                    </a>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>هیچ کتابی به علاقه‌مندی‌ها اضافه نشده است.</p>
+{% endif %}
+
+{% endblock %}

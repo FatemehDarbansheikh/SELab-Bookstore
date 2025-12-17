@@ -1,0 +1,66 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+صفحه اصلی | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<section style="margin-bottom:40px; text-align:center;">
+    <h1 style="font-size:28px; margin-bottom:10px;">
+        فروشگاه آنلاین کتاب
+    </h1>
+    <p style="color:#555;">
+        بهترین کتاب‌ها را با چند کلیک بخرید 
+    </p>
+</section>
+
+{% if categories %}
+<section style="margin-bottom:40px;">
+    <h2 style="margin-bottom:15px;">دسته‌بندی‌ها</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        {% for category in categories %}
+            <a href="{% url 'book_list' %}?category={{ category.id }}"
+               class="btn btn-outline">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section>
+    <h2 style="margin-bottom:20px;">جدیدترین کتاب‌ها</h2>
+
+    {% if books %}
+        <div class="book-grid">
+            {% for book in books %}
+                <div class="book-card">
+
+                    {% if book.cover %}
+                        <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x400?text=Book" alt="Book">
+                    {% endif %}
+
+                    <div class="book-title">
+                        {{ book.title }}
+                    </div>
+
+                    <div class="book-price">
+                        {{ book.price }} تومان
+                    </div>
+
+                    <a href="{% url 'book_detail' book.id %}" class="btn btn-primary">
+                        مشاهده جزئیات
+                    </a>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>کتابی برای نمایش وجود ندارد.</p>
+    {% endif %}
+</section>
+
+{% endblock %}

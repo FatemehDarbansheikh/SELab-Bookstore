@@ -1,0 +1,62 @@
+{% extends 'main/base.html' %}
+{% load math_filters %}
+
+{% block title %}
+ثبت سفارش | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">بررسی سفارش</h2>
+
+{% if cart_items %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>کتاب</th>
+            <th>قیمت واحد</th>
+            <th>تعداد</th>
+            <th>جمع</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.book.title }}</td>
+            <td>{{ item.book.price }} تومان</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.book.price|multiply:item.quantity }} تومان</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top:20px; text-align:left;">
+    <strong>مبلغ نهایی:</strong>
+    {{ cart_items|length }} کالا |
+    {{ cart_items.0.book.price|multiply:cart_items.0.quantity|add:0 }} تومان
+</div>
+
+<form method="post" style="margin-top:30px;">
+    {% csrf_token %}
+
+    <label>انتخاب آدرس ارسال:</label>
+    <select name="address" required>
+        {% for address in addresses %}
+            <option value="{{ address.id }}">
+                {{ address.country }} - {{ address.city }} - {{ address.street }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button class="btn btn-primary" style="margin-top:20px;">
+        ثبت سفارش
+    </button>
+</form>
+
+{% else %}
+<p>سبد خرید شما خالی است.</p>
+{% endif %}
+
+{% endblock %}

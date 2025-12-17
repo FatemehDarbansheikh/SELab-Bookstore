@@ -1,0 +1,79 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+لیست کتاب‌ها | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">کتاب‌ها</h2>
+
+<form method="get" style="margin-bottom:30px; display:flex; flex-wrap:wrap; gap:10px;">
+
+    <input type="text"
+           name="q"
+           placeholder="جستجوی کتاب..."
+           value="{{ request.GET.q }}"
+           style="flex:1; min-width:200px;">
+
+    <select name="category">
+        <option value="">همه دسته‌بندی‌ها</option>
+        {% for cat in categories %}
+            <option value="{{ cat.id }}"
+                {% if request.GET.category == cat.id|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+                {{ cat.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="sort">
+        <option value="">مرتب‌ سازی</option>
+        <option value="price_low"
+            {% if request.GET.sort == 'price_low' %}selected{% endif %}
+        >
+            ارزان‌ ترین
+        </option>
+        <option value="price_high"
+            {% if request.GET.sort == 'price_high' %}selected{% endif %}
+        >
+            گران‌ ترین
+        </option>
+    </select>
+
+    <button class="btn btn-primary">اعمال</button>
+</form>
+
+{% if books %}
+    <div class="book-grid">
+        {% for book in books %}
+            <div class="book-card">
+
+                {% if book.cover %}
+                    <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x400?text=Book">
+                {% endif %}
+
+                <div class="book-title">
+                    {{ book.title }}
+                </div>
+
+                <div class="book-price">
+                    {{ book.price }} تومان
+                </div>
+
+                <a href="{% url 'book_detail' book.id %}" class="btn btn-primary">
+                    مشاهده جزئیات
+                </a>
+
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>کتابی یافت نشد.</p>
+{% endif %}
+
+{% endblock %}

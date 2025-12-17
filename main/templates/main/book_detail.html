@@ -1,0 +1,99 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+{{ book.title }} | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<div style="display:grid; grid-template-columns: 1fr 2fr; gap:40px; align-items:start;">
+
+    <div>
+        {% if book.cover %}
+            <img src="{{ book.cover.url }}"
+                 alt="{{ book.title }}"
+                 style="width:100%; border-radius:12px;">
+        {% else %}
+            <img src="https://via.placeholder.com/400x550?text=Book"
+                 style="width:100%; border-radius:12px;">
+        {% endif %}
+    </div>
+
+    <div>
+        <h2 style="margin-bottom:10px;">{{ book.title }}</h2>
+
+        <p style="color:#555; margin-bottom:10px;">
+            نویسنده:
+            {% for author in book.authors.all %}
+                {{ author.first_name }} {{ author.last_name }}{% if not forloop.last %}،{% endif %}
+            {% endfor %}
+        </p>
+
+        <p style="color:#555; margin-bottom:10px;">
+            ناشر: {{ book.publisher.name }}
+        </p>
+
+        <p style="color:#555; margin-bottom:10px;">
+            دسته‌بندی:
+            {% for cat in book.categories.all %}
+                {{ cat.name }}{% if not forloop.last %}،{% endif %}
+            {% endfor %}
+        </p>
+
+        {% if avg_rating %}
+            <p style="margin-bottom:10px;">
+                ⭐ امتیاز میانگین: {{ avg_rating|floatformat:1 }} از 5
+            </p>
+        {% endif %}
+
+        <div style="font-size:22px; color:#16a34a; margin:20px 0;">
+            {{ book.price }} تومان
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a href="{% url 'add_to_cart' book.id %}" class="btn btn-primary">
+                افزودن به سبد خرید
+            </a>
+
+            <a href="{% url 'add_to_wishlist' book.id %}" class="btn btn-outline">
+                افزودن به علاقه‌مندی‌ها
+            </a>
+        </div>
+    </div>
+</div>
+
+{% if book.description %}
+<section style="margin-top:50px;">
+    <h3 style="margin-bottom:10px;">توضیحات کتاب</h3>
+    <p style="color:#444;">{{ book.description }}</p>
+</section>
+{% endif %}
+
+<section style="margin-top:50px;">
+    <h3 style="margin-bottom:15px;">نظرات کاربران</h3>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <div style="background:#fff; padding:15px; border-radius:10px; margin-bottom:10px;">
+                <strong>{{ review.user.username }}</strong>
+                <span style="color:#f59e0b;">⭐ {{ review.rating }}</span>
+                <p style="margin-top:5px;">{{ review.comment }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>هنوز نظری ثبت نشده است.</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'add_review' book.id %}" class="btn btn-primary" style="margin-top:15px;">
+            ثبت نظر
+        </a>
+    {% else %}
+        <p style="margin-top:10px;">
+            برای ثبت نظر ابتدا
+            <a href="{% url 'login' %}" style="color:#4f46e5;">وارد شوید</a>.
+        </p>
+    {% endif %}
+</section>
+
+{% endblock %}

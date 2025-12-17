@@ -1,0 +1,53 @@
+{% extends 'main/base.html' %}
+{% load math_filters %}
+
+{% block title %}
+جزئیات سفارش | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">جزئیات سفارش</h2>
+
+<div style="background:#fff; padding:20px; border-radius:12px; margin-bottom:30px;">
+    <p><strong>شماره سفارش:</strong> {{ order.id }}</p>
+    <p><strong>تاریخ ثبت:</strong> {{ order.order_date|date:"Y/m/d H:i" }}</p>
+    <p><strong>وضعیت:</strong> {{ order.get_status_display }}</p>
+    <p><strong>مبلغ کل:</strong> {{ order.total_amount }} تومان</p>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>کتاب</th>
+            <th>قیمت واحد</th>
+            <th>تعداد</th>
+            <th>جمع</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.book.title }}</td>
+            <td>{{ item.unit_price }} تومان</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price|multiply:item.quantity }} تومان</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top:30px; background:#fff; padding:20px; border-radius:12px;">
+    <h3 style="margin-bottom:10px;">آدرس ارسال</h3>
+    <p>
+        {{ order.address.country }}،
+        {{ order.address.city }}،
+        {{ order.address.street }}
+    </p>
+</div>
+
+<a href="{% url 'order_history' %}" class="btn btn-outline" style="margin-top:20px;">
+    بازگشت به سفارش‌ها
+</a>
+
+{% endblock %}

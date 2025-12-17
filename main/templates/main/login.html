@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+
+{% block title %}
+ورود | کتاب‌ فروشی 
+{% endblock %}
+
+{% block content %}
+
+<div class="form-box">
+    <h2>ورود به حساب کاربری</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <input type="text"
+               name="username"
+               placeholder="نام کاربری"
+               required>
+
+        <input type="password"
+               name="password"
+               placeholder="رمز عبور"
+               required>
+
+        <button type="submit" class="btn btn-primary">
+            ورود
+        </button>
+    </form>
+
+    <p style="margin-top:15px; text-align:center; font-size:14px;">
+        حساب کاربری ندارید؟
+        <a href="{% url 'signup' %}" style="color:#4f46e5;">
+            ثبت‌ نام کنید
+        </a>
+    </p>
+</div>
+
+{% endblock %}
