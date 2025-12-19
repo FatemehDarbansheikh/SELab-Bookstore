@@ -5,15 +5,18 @@ from django.contrib import messages
 from django.db.models import Q, Avg
 
 from .models import (
-    User, Book, Category, Author, Cart, Wishlist,
-    Order, OrderItem, Address, Review
+    User, Address, Category, Book,
+    Review, Cart, Wishlist,
+    Order, OrderItem, Payment,
+    Notification, Support
 )
+from .forms import EditProfileForm, SupportForm
+from .utils import send_notification_email
 
 
 def home_view(request):
     books = Book.objects.all().order_by('-id')[:8]
     categories = Category.objects.all()
-
     return render(request, 'main/home.html', {
         'books': books,
         'categories': categories
@@ -22,33 +25,27 @@ def home_view(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-
         user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password
+            username=request.POST['username'],
+            email=request.POST['email'],
+            password=request.POST['password']
         )
         login(request, user)
         return redirect('home')
-
     return render(request, 'main/signup.html')
 
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(
+            request,
+            username=request.POST['username'],
+            password=request.POST['password']
+        )
         if user:
             login(request, user)
             return redirect('home')
-        else:
-            messages.error(request, 'نام کاربری یا رمز عبور اشتباه است')
-
+        messages.error(request, 'اطلاعات ورود اشتباه است')
     return render(request, 'main/login.html')
 
 
@@ -60,16 +57,15 @@ def logout_view(request):
 
 def book_list_view(request):
     books = Book.objects.all()
-
-    query = request.GET.get('q')
+    q = request.GET.get('q')
     category = request.GET.get('category')
     sort = request.GET.get('sort')
 
-    if query:
+    if q:
         books = books.filter(
-            Q(title__icontains=query) |
-            Q(authors__first_name__icontains=query) |
-            Q(authors__last_name__icontains=query)
+            Q(title__icontains=q) |
+            Q(authors__first_name__icontains=q) |
+            Q(authors__last_name__icontains=q)
         ).distinct()
 
     if category:
@@ -80,11 +76,9 @@ def book_list_view(request):
     elif sort == 'price_high':
         books = books.order_by('-price')
 
-    categories = Category.objects.all()
-
     return render(request, 'main/book_list.html', {
         'books': books,
-        'categories': categories
+        'categories': Category.objects.all()
     })
 
 
@@ -92,7 +86,6 @@ def book_detail_view(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     reviews = Review.objects.filter(book=book)
     avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-
     return render(request, 'main/book_detail.html', {
         'book': book,
         'reviews': reviews,
@@ -102,39 +95,48 @@ def book_detail_view(request, book_id):
 
 @login_required
 def add_to_cart_view(request, book_id):
-    book = get_object_or_404(Book, id=book_id)
-
-    cart_item, created = Cart.objects.get_or_create(
+    cart, created = Cart.objects.get_or_create(
         user=request.user,
-        book=book,
+        book_id=book_id,
         defaults={'quantity': 1}
     )
-
     if not created:
-        cart_item.quantity += 1
-        cart_item.save()
-
+        cart.quantity += 1
+        cart.save()
     return redirect('cart')
 
 
 @login_required
 def cart_view(request):
-    cart_items = Cart.objects.filter(user=request.user)
-
-    total_price = sum(
-        item.book.price * item.quantity for item in cart_items
-    )
-
+    items = Cart.objects.filter(user=request.user)
+    total = sum(i.book.price * i.quantity for i in items)
     return render(request, 'main/cart.html', {
-        'cart_items': cart_items,
-        'total_price': total_price
+        'cart_items': items,
+        'total_price': total
     })
 
 
 @login_required
+def update_cart_quantity(request, cart_id):
+    item = get_object_or_404(Cart, id=cart_id, user=request.user)
+    action = request.POST.get('action')
+
+    if action == 'increase':
+        item.quantity += 1
+    elif action == 'decrease':
+        item.quantity -= 1
+
+    if item.quantity <= 0:
+        item.delete()
+    else:
+        item.save()
+
+    return redirect('cart')
+
+
+@login_required
 def remove_from_cart_view(request, item_id):
-    item = get_object_or_404(Cart, id=item_id, user=request.user)
-    item.delete()
+    get_object_or_404(Cart, id=item_id, user=request.user).delete()
     return redirect('cart')
 
 
@@ -146,28 +148,27 @@ def wishlist_view(request):
 
 @login_required
 def add_to_wishlist_view(request, book_id):
-    book = get_object_or_404(Book, id=book_id)
-    Wishlist.objects.get_or_create(user=request.user, book=book)
+    Wishlist.objects.get_or_create(user=request.user, book_id=book_id)
     return redirect('wishlist')
 
 
 @login_required
 def remove_from_wishlist_view(request, item_id):
-    item = get_object_or_404(Wishlist, id=item_id, user=request.user)
-    item.delete()
+    get_object_or_404(Wishlist, id=item_id, user=request.user).delete()
     return redirect('wishlist')
 
 
 @login_required
 def checkout_view(request):
     cart_items = Cart.objects.filter(user=request.user)
-    addresses = Address.objects.filter(user=request.user)
+
+    if not cart_items.exists():
+        messages.error(request, 'سبد خرید خالی است')
+        return redirect('cart')
 
     if request.method == 'POST':
-        address_id = request.POST['address']
-        address = get_object_or_404(Address, id=address_id)
-
-        total = sum(item.book.price * item.quantity for item in cart_items)
+        address = get_object_or_404(Address, id=request.POST['address'], user=request.user)
+        total = sum(i.book.price * i.quantity for i in cart_items)
 
         order = Order.objects.create(
             user=request.user,
@@ -185,46 +186,139 @@ def checkout_view(request):
             )
 
         cart_items.delete()
-        return redirect('order_detail', order.id)
+        return redirect('online_payment', order.id)
 
     return render(request, 'main/checkout.html', {
         'cart_items': cart_items,
-        'addresses': addresses
+        'addresses': Address.objects.filter(user=request.user)
     })
+
+
+@login_required
+def online_payment(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if request.method == 'POST':
+        Payment.objects.create(
+            order=order,
+            payment_method='Online',
+            amount=order.total_amount,
+            transaction_status='success'
+        )
+
+        order.status = 'paid'
+        order.save()
+
+        Notification.objects.create(
+            user=request.user,
+            message=f'سفارش شماره {order.id} با موفقیت ثبت شد',
+            type='order'
+        )
+
+        send_notification_email(
+            'تأیید ثبت سفارش',
+            f'سفارش شما با شماره {order.id} با موفقیت ثبت شد.',
+            request.user.email
+        )
+
+        return redirect('order_confirmation', order.id)
+
+    return render(request, 'main/payment.html', {'order': order})
+
+
+@login_required
+def order_confirmation(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user, status='paid')
+    return render(request, 'main/order_confirmation.html', {'order': order})
+
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status in ['pending', 'paid']:
+        order.status = 'canceled'
+        order.save()
+
+    return redirect('order_history')
+
+
+@login_required
+def order_history_view(request):
+    orders = Order.objects.filter(user=request.user).order_by('-id')
+    return render(request, 'main/order_history.html', {'orders': orders})
 
 
 @login_required
 def order_detail_view(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     items = OrderItem.objects.filter(order=order)
-
     return render(request, 'main/order_detail.html', {
         'order': order,
         'items': items
     })
 
 
+
 @login_required
-def order_history_view(request):
-    orders = Order.objects.filter(user=request.user)
-    return render(request, 'main/order_history.html', {'orders': orders})
+def profile_view(request):
+    return render(request, 'main/profile.html')
+
+
+@login_required
+def edit_profile(request):
+    form = EditProfileForm(request.POST or None, instance=request.user)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect('profile')
+    return render(request, 'main/profile_edit.html', {'form': form})
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        request.user.delete()
+        logout(request)
+        return redirect('home')
+    return render(request, 'main/delete_account.html')
+
 
 
 @login_required
 def add_review_view(request, book_id):
     book = get_object_or_404(Book, id=book_id)
-
     if request.method == 'POST':
-        rating = request.POST['rating']
-        comment = request.POST.get('comment')
-
         Review.objects.create(
             user=request.user,
             book=book,
-            rating=rating,
-            comment=comment
+            rating=request.POST['rating'],
+            comment=request.POST.get('comment', '')
         )
-
         return redirect('book_detail', book_id)
-
     return render(request, 'main/add_review.html', {'book': book})
+
+
+
+@login_required
+def user_notifications(request):
+    notifications = Notification.objects.filter(user=request.user).order_by('-id')
+    return render(request, 'main/notifications.html', {'notifications': notifications})
+
+
+
+@login_required
+def create_support(request):
+    form = SupportForm(request.POST or None)
+    if form.is_valid():
+        support = form.save(commit=False)
+        support.user = request.user
+        support.status = 'open'
+        support.save()
+        return redirect('support_list')
+    return render(request, 'main/create_support.html', {'form': form})
+
+
+@login_required
+def support_list(request):
+    supports = Support.objects.filter(user=request.user).order_by('-id')
+    return render(request, 'main/support_list.html', {'supports': supports})

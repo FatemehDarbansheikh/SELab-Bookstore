@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block title %}اعلان‌ها{% endblock %}
+
+{% block content %}
+<h2>اعلان‌های شما</h2>
+
+<ul class="notification-list">
+    {% for n in notifications %}
+        <li class="{% if not n.is_read %}unread{% endif %}">
+            {{ n.message }}
+            <small>{{ n.created_at|date:"Y/m/d H:i" }}</small>
+        </li>
+    {% empty %}
+        <p>اعلانی وجود ندارد</p>
+    {% endfor %}
+</ul>
+{% endblock %}

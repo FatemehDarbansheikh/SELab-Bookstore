@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block title %}ویرایش پروفایل{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <h2>ویرایش پروفایل</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-primary">
+            ذخیره تغییرات
+        </button>
+    </form>
+</div>
+{% endblock %}

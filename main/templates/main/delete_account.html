@@ -1,0 +1,24 @@
+{% extends 'main/base.html' %}
+
+{% block title %}حذف حساب کاربری{% endblock %}
+
+{% block content %}
+<div class="auth-container danger">
+    <h2>حذف حساب کاربری</h2>
+
+    <p style="color:#b91c1c;">
+        ⚠️ هشدار: با حذف حساب، تمام اطلاعات شما به‌طور دائم حذف خواهد شد
+        و این عملیات قابل بازگشت نیست.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-danger">
+            حذف حساب کاربری
+        </button>
+        <a href="{% url 'profile' %}" class="btn-secondary">
+            انصراف
+        </a>
+    </form>
+</div>
+{% endblock %}

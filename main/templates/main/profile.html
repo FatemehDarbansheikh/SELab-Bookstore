@@ -14,25 +14,20 @@
         <h3 style="margin-bottom:10px;">اطلاعات حساب</h3>
 
         <p><strong>نام کاربری:</strong> {{ user.username }}</p>
+        <p><strong>نام:</strong> {{ user.first_name }}</p>
+        <p><strong>نام خانوادگی:</strong> {{ user.last_name }}</p>
         <p><strong>ایمیل:</strong> {{ user.email }}</p>
         <p><strong>شماره تماس:</strong> {{ user.phone|default:"—" }}</p>
-        <p><strong>تاریخ عضویت:</strong> {{ user.date_joined|date:"Y/m/d" }}</p>
-
-        <a href="#" class="btn btn-outline" style="margin-top:15px;">
-            ویرایش اطلاعات
-        </a>
-    </div>
-
-    <div style="background:#fff; padding:20px; border-radius:12px;">
-        <h3 style="margin-bottom:10px;">آدرس‌های من</h3>
-
-        {% if user.addresses.all %}
+        <p><strong>تاریخ عضویت:</strong> {{ user.created_at|date:"Y/m/d" }}</p>
+        <p><strong>آدرس‌ها:</strong>    
+            {% if user.addresses.all %}
             <ul style="padding-right:20px;">
                 {% for address in user.addresses.all %}
                     <li style="margin-bottom:10px;">
                         {{ address.country }}،
                         {{ address.city }}،
-                        {{ address.street }}
+                        {{ address.street }}،
+                         کد پستی:{{ address.postal_code }}
                         {% if address.is_default %}
                             <span style="color:#16a34a;">(پیش‌ فرض)</span>
                         {% endif %}
@@ -41,9 +36,14 @@
             </ul>
         {% else %}
             <p>آدرسی ثبت نشده است.</p>
-        {% endif %}
+        {% endif %}</p>
+    
     </div>
 
 </div>
+
+<a href="{% url 'edit_profile' %}" class="btn btn-outline"style="margin-top:15px;"> ویرایش پروفایل</a>
+<a href="{% url 'delete_account' %}" class="btn btn-outline">حذف حساب کاربری</a>
+
 
 {% endblock %}

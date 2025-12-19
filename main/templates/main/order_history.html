@@ -40,4 +40,10 @@
 <p>هیچ سفارشی ثبت نشده است.</p>
 {% endif %}
 
+{% if order.status == 'pending' or order.status == 'paid' %}
+    <a href="{% url 'cancel_order' order.id %}" class="btn-danger">
+        لغو سفارش
+    </a>
+{% endif %}
+
 {% endblock %}

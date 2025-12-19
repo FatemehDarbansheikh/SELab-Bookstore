@@ -1,0 +1,12 @@
+{% extends 'main/base.html' %}
+{% block title %}پشتیبانی{% endblock %}
+
+{% block content %}
+<h2>ارسال درخواست پشتیبانی</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn-primary">ارسال</button>
+</form>
+{% endblock %}

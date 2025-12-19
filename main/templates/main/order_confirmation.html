@@ -1,0 +1,21 @@
+{% extends 'main/base.html' %}
+
+{% block title %}تأیید سفارش{% endblock %}
+
+{% block content %}
+<h2>سفارش شما با موفقیت ثبت شد ✅</h2>
+
+<p>
+    شماره سفارش:
+    <strong>{{ order.id }}</strong>
+</p>
+
+<p>
+    مبلغ پرداخت‌ شده:
+    <strong>{{ order.total_amount }} تومان</strong>
+</p>
+
+<a href="{% url 'orders' %}" class="btn-primary">
+    مشاهده سفارش‌ها
+</a>
+{% endblock %}

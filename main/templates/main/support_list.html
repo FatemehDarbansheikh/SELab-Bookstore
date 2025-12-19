@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+{% block title %}درخواست‌های پشتیبانی{% endblock %}
+
+{% block content %}
+<h2>درخواست‌های پشتیبانی من</h2>
+
+<ul>
+{% for s in supports %}
+    <li>
+        <strong>{{ s.subject }}</strong> |
+        وضعیت: {{ s.status }} |
+        {{ s.created_at|date:"Y/m/d H:i" }}
+    </li>
+{% empty %}
+    <p>درخواستی ثبت نشده است.</p>
+{% endfor %}
+</ul>
+{% endblock %}
