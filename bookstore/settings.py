@@ -147,7 +147,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'fa.drsh1401@gamil.com'
-EMAIL_HOST_PASSWORD = 'wnel mhmw zpka dfrs'
 
-DEFAULT_FROM_EMAIL = 'Bookstore <fa.drsh1401@gamil.com>'
