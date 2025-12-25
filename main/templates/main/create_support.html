@@ -1,12 +1,28 @@
 {% extends 'main/base.html' %}
-{% block title %}پشتیبانی{% endblock %}
+
+{% block title %}
+ارسال درخواست پشتیبانی
+{% endblock %}
 
 {% block content %}
-<h2>ارسال درخواست پشتیبانی</h2>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn-primary">ارسال</button>
-</form>
+<div class="form-box">
+    <h2>ارسال درخواست پشتیبانی</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">
+            ارسال درخواست
+        </button>
+    </form>
+
+    <a href="{% url 'support_list' %}"
+       class="btn btn-outline"
+       style="margin-top:15px; display:inline-block;">
+        بازگشت
+    </a>
+</div>
+
 {% endblock %}

@@ -2,7 +2,7 @@
 {% load math_filters %}
 
 {% block title %}
-سبد خرید | کتاب‌ فروشی 
+سبد خرید | کتاب‌ فروشی
 {% endblock %}
 
 {% block content %}
@@ -24,19 +24,29 @@
         {% for item in cart_items %}
         <tr>
             <td>{{ item.book.title }}</td>
-            <td>{{ item.book.price }} تومان</td>
 
-            <td>{{ item.quantity }}</td>
-            <form method="post" action="{% url 'update_cart_quantity' item.id %}">
-                {% csrf_token %}
-                <button name="action" value="decrease">−</button>
-                {{ item.quantity }}
-                <button name="action" value="increase">+</button>
-            </form>
-            
-            <td>{{ item.book.price|multiply:item.quantity }} تومان</td>
             <td>
-                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-outline">
+                {{ item.book.price }} تومان
+            </td>
+
+            <td>
+                <form method="post"
+                      action="{% url 'update_cart_quantity' item.id %}"
+                      style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                    {% csrf_token %}
+                    <button name="action" value="decrease" class="btn btn-outline">−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button name="action" value="increase" class="btn btn-outline">+</button>
+                </form>
+            </td>
+
+            <td>
+                {{ item.book.price|multiply:item.quantity }} تومان
+            </td>
+
+            <td>
+                <a href="{% url 'remove_from_cart' item.id %}"
+                   class="btn btn-outline">
                     حذف
                 </a>
             </td>
@@ -50,7 +60,9 @@
     {{ total_price }} تومان
 </div>
 
-<a href="{% url 'checkout' %}" class="btn btn-primary" style="margin-top:20px;">
+<a href="{% url 'checkout' %}"
+   class="btn btn-primary"
+   style="margin-top:20px;">
     ادامه فرآیند خرید
 </a>
 

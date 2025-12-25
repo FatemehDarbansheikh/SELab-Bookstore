@@ -3,6 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, Avg
+from .forms import AddressForm
 
 from .models import (
     User, Address, Category, Book,
@@ -25,28 +26,47 @@ def home_view(request):
 
 def signup_view(request):
     if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'این نام کاربری قبلاً استفاده شده است.')
+            return redirect('signup')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'این ایمیل قبلاً ثبت شده است.')
+            return redirect('signup')
+
         user = User.objects.create_user(
-            username=request.POST['username'],
-            email=request.POST['email'],
-            password=request.POST['password']
+            username=username,
+            email=email,
+            password=password
         )
+
+        messages.success(request, 'ثبت‌نام با موفقیت انجام شد.')
         login(request, user)
         return redirect('home')
+
     return render(request, 'main/signup.html')
 
 
 def login_view(request):
     if request.method == 'POST':
-        user = authenticate(
-            request,
-            username=request.POST['username'],
-            password=request.POST['password']
-        )
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
         if user:
             login(request, user)
+            messages.success(request, 'با موفقیت وارد شدید.')
             return redirect('home')
-        messages.error(request, 'اطلاعات ورود اشتباه است')
+
+        messages.error(request, 'نام کاربری یا رمز عبور نادرست است.')
+
     return render(request, 'main/login.html')
+
 
 
 @login_required
@@ -267,12 +287,22 @@ def profile_view(request):
 
 @login_required
 def edit_profile(request):
-    form = EditProfileForm(request.POST or None, instance=request.user)
+    form = EditProfileForm(
+        request.POST or None,
+        instance=request.user
+    )
+
     if request.method == 'POST' and form.is_valid():
         form.save()
-        return redirect('profile')
-    return render(request, 'main/profile_edit.html', {'form': form})
+        messages.success(request, 'اطلاعات پروفایل به‌روزرسانی شد.')
+        return redirect('edit_profile')
 
+    addresses = Address.objects.filter(user=request.user)
+
+    return render(request, 'main/profile_edit.html', {
+        'form': form,
+        'addresses': addresses
+    })
 
 @login_required
 def delete_account(request):
@@ -322,3 +352,113 @@ def create_support(request):
 def support_list(request):
     supports = Support.objects.filter(user=request.user).order_by('-id')
     return render(request, 'main/support_list.html', {'supports': supports})
+
+
+
+@login_required
+def add_address(request):
+    from .forms import AddressForm
+    form = AddressForm(request.POST or None)
+    if form.is_valid():
+        address = form.save(commit=False)
+        address.user = request.user
+        address.save()
+        return redirect('edit_profile')
+    return render(request, 'main/address_form.html', {'form': form})
+
+
+
+@login_required
+def edit_address(request, address_id):
+    from .forms import AddressForm
+    address = get_object_or_404(Address, id=address_id, user=request.user)
+    form = AddressForm(request.POST or None, instance=address)
+    if form.is_valid():
+        form.save()
+        return redirect('edit_profile')
+    return render(request, 'main/address_form.html', {'form': form})
+
+
+
+@login_required
+def add_address(request):
+    form = AddressForm(request.POST or None)
+
+    if form.is_valid():
+        address = form.save(commit=False)
+        address.user = request.user
+
+        if address.is_default:
+            Address.objects.filter(
+                user=request.user,
+                is_default=True
+            ).update(is_default=False)
+
+        address.save()
+        messages.success(request, 'آدرس با موفقیت اضافه شد.')
+        return redirect('profile')
+
+    return render(request, 'main/address_form.html', {
+        'form': form,
+        'title': 'افزودن آدرس'
+    })
+
+
+@login_required
+def edit_address(request, address_id):
+    address = get_object_or_404(
+        Address,
+        id=address_id,
+        user=request.user
+    )
+
+    form = AddressForm(request.POST or None, instance=address)
+
+    if form.is_valid():
+        address = form.save(commit=False)
+
+        if address.is_default:
+            Address.objects.filter(
+                user=request.user,
+                is_default=True
+            ).exclude(id=address.id).update(is_default=False)
+
+        address.save()
+        messages.success(request, 'آدرس ویرایش شد.')
+        return redirect('profile')
+
+    return render(request, 'main/address_form.html', {
+        'form': form,
+        'title': 'ویرایش آدرس'
+    })
+
+
+@login_required
+def create_support(request):
+    form = SupportForm(request.POST or None)
+    if form.is_valid():
+        support = form.save(commit=False)
+        support.user = request.user
+        support.status = 'open'
+        support.save()
+        return redirect('support_list')
+    return render(request, 'main/create_support.html', {'form': form})
+
+
+@login_required
+def support_list(request):
+    supports = Support.objects.filter(user=request.user)
+    return render(request, 'main/support_list.html', {'supports': supports})
+
+
+
+@login_required
+def mark_notification_read(request, notification_id):
+    notification = get_object_or_404(
+        Notification,
+        id=notification_id,
+        user=request.user
+    )
+    notification.is_read = True
+    notification.save()
+    return redirect('notifications')

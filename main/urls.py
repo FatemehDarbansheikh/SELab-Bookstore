@@ -12,6 +12,8 @@ urlpatterns = [
 
     path('profile/', views.profile_view, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('address/add/', views.add_address, name='add_address'),
+    path('address/<int:address_id>/edit/', views.edit_address, name='edit_address'),
     path('profile/delete/', views.delete_account, name='delete_account'),
 
     path('books/', views.book_list_view, name='book_list'),
@@ -37,6 +39,7 @@ urlpatterns = [
     path('reviews/add/<int:book_id>/', views.add_review_view, name='add_review'),
 
     path('notifications/', views.user_notifications, name='notifications'),
+    path('notifications/read/<int:notification_id>/',views.mark_notification_read,name='mark_notification_read'),
 
     path('support/new/', views.create_support, name='create_support'),
     path('support/', views.support_list, name='support_list'),

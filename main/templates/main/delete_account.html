@@ -13,10 +13,10 @@
 
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn-danger">
+        <button type="submit" class="btn btn-outline danger">
             حذف حساب کاربری
         </button>
-        <a href="{% url 'profile' %}" class="btn-secondary">
+        <a href="{% url 'profile' %}" class="btn btn-outline">
             انصراف
         </a>
     </form>

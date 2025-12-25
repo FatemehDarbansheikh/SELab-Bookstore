@@ -3,16 +3,57 @@
 {% block title %}ویرایش پروفایل{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <h2>ویرایش پروفایل</h2>
+
+<div class="form-box">
+    <h2>ویرایش اطلاعات حساب</h2>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
 
-        <button type="submit" class="btn-primary">
+        <button type="submit" class="btn btn-primary">
             ذخیره تغییرات
         </button>
     </form>
 </div>
+
+<hr style="margin:40px 0;">
+
+<div class="profile-card">
+    <h3>آدرس‌ها</h3>
+
+    {% if addresses %}
+        <ul class="address-list">
+            {% for address in addresses %}
+                <li>
+                    {{ address.city }}، {{ address.street }}
+                    {% if address.is_default %}
+                        <span class="default-address">(پیش‌فرض)</span>
+                    {% endif %}
+                    —
+                    <a href="{% url 'edit_address' address.id %}"class="btn btn-outline" style="font-size:12px;"> ویرایش</a>
+
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>آدرسی ثبت نشده است.</p>
+    {% endif %}
+
+    <a href="{% url 'add_address' %}"class="btn btn-primary" style="margin-top:20px;"> افزودن آدرس جدید</a>
+
+</div>
+
+<hr style="margin:40px 0;">
+
+<div class="profile-card">
+    <h3>امنیت حساب</h3>
+
+    <a href="{% url 'password_reset' %}" class="btn btn-outline">
+        تغییر رمز عبور
+    </a>
+</div>
+
 {% endblock %}
+
+

@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-ورود | کتاب‌ فروشی 
+ورود | کتاب‌ فروشی
 {% endblock %}
 
 {% block content %}
@@ -15,6 +15,7 @@
         <input type="text"
                name="username"
                placeholder="نام کاربری"
+               autofocus
                required>
 
         <input type="password"
@@ -33,11 +34,13 @@
             ثبت‌ نام کنید
         </a>
     </p>
-     <p style="margin-top:15px; text-align:center; font-size:14px;">
+
+    <p style="margin-top:10px; text-align:center; font-size:14px;">
         <a href="{% url 'password_reset' %}" style="color:#4f46e5;">
-           رمز عبور خود را فراموش کرده‌اید؟
+            رمز عبور خود را فراموش کرده‌اید؟
         </a>
     </p>
 </div>
 
 {% endblock %}
+

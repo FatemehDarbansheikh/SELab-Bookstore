@@ -19,3 +19,4 @@ admin.site.register(OrderItem)
 admin.site.register(Payment)
 admin.site.register(Support)
 admin.site.register(Notification)
+

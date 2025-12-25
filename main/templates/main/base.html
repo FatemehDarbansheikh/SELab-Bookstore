@@ -27,7 +27,9 @@
                 <a href="{% url 'cart' %}">سبد خرید</a>
                 <a href="{% url 'wishlist' %}">علاقه‌مندی‌ها</a>
                 <a href="{% url 'order_history' %}">سفارش‌ها</a>
-                <a href="{% url 'notifications' %}">اعلان‌ها</a>
+                <a href="{% url 'notifications' %}">
+                    اعلان‌ها
+                </a>
                 <a href="{% url 'support_list' %}">پشتیبانی</a>
             {% endif %}
         </nav>
@@ -80,5 +82,7 @@
     </div>
 </footer>
 
+<script src="{% static 'main/js/main.js' %}"></script>
 </body>
 </html>
+

@@ -6,44 +6,54 @@
 
 {% block content %}
 
-<h2 style="margin-bottom:20px;">پروفایل من</h2>
+<h2 class="page-title">پروفایل من</h2>
 
-<div style="display:grid; grid-template-columns: 1fr 2fr; gap:30px;">
+<div class="profile-grid">
 
-    <div style="background:#fff; padding:20px; border-radius:12px;">
-        <h3 style="margin-bottom:10px;">اطلاعات حساب</h3>
+    <div class="profile-card">
+        <h3>اطلاعات حساب</h3>
 
         <p><strong>نام کاربری:</strong> {{ user.username }}</p>
-        <p><strong>نام:</strong> {{ user.first_name }}</p>
-        <p><strong>نام خانوادگی:</strong> {{ user.last_name }}</p>
+        <p><strong>نام:</strong> {{ user.first_name|default:"—" }}</p>
+        <p><strong>نام خانوادگی:</strong> {{ user.last_name|default:"—" }}</p>
         <p><strong>ایمیل:</strong> {{ user.email }}</p>
         <p><strong>شماره تماس:</strong> {{ user.phone|default:"—" }}</p>
         <p><strong>تاریخ عضویت:</strong> {{ user.created_at|date:"Y/m/d" }}</p>
-        <p><strong>آدرس‌ها:</strong>    
-            {% if user.addresses.all %}
-            <ul style="padding-right:20px;">
-                {% for address in user.addresses.all %}
-                    <li style="margin-bottom:10px;">
-                        {{ address.country }}،
-                        {{ address.city }}،
-                        {{ address.street }}،
-                         کد پستی:{{ address.postal_code }}
-                        {% if address.is_default %}
-                            <span style="color:#16a34a;">(پیش‌ فرض)</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>آدرسی ثبت نشده است.</p>
-        {% endif %}</p>
-    
+
+        <div class="address-section">
+            <strong>آدرس‌ها:</strong>
+
+            {% if user.addresses.exists %}
+                <ul class="address-list">
+                    {% for address in user.addresses.all %}
+                        <li>
+                            {{ address.country }}،
+                            {{ address.city }}،
+                            {{ address.street }}،
+                            کد پستی: {{ address.postal_code }}
+
+                            {% if address.is_default %}
+                                <span class="default-address">(پیش‌فرض)</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="empty-text">آدرسی ثبت نشده است.</p>
+            {% endif %}
+        </div>
     </div>
 
 </div>
 
-<a href="{% url 'edit_profile' %}" class="btn btn-outline"style="margin-top:15px;"> ویرایش پروفایل</a>
-<a href="{% url 'delete_account' %}" class="btn btn-outline">حذف حساب کاربری</a>
-
+<div class="profile-actions">
+    <a href="{% url 'edit_profile' %}" class="btn btn-outline">
+        ویرایش پروفایل
+    </a>
+    <a href="{% url 'delete_account' %}" class="btn btn-outline danger">
+        حذف حساب کاربری
+    </a>
+</div>
 
 {% endblock %}
+

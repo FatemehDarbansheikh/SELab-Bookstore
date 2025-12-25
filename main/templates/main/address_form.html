@@ -1,20 +1,28 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-تغییر رمز عبور
+{{ title }}
 {% endblock %}
 
 {% block content %}
+
 <div class="form-box">
-    <h2>تعیین رمز عبور جدید</h2>
+    <h2>{{ title }}</h2>
 
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
 
         <button type="submit" class="btn btn-primary">
-            تغییر رمز عبور
+            ذخیره
         </button>
     </form>
+
+    <a href="{% url 'profile' %}"
+       class="btn btn-outline"
+       style="margin-top:10px; display:inline-block;">
+        بازگشت به پروفایل
+    </a>
 </div>
+
 {% endblock %}

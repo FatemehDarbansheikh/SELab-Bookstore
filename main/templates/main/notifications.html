@@ -1,18 +1,38 @@
 {% extends 'main/base.html' %}
 
-{% block title %}اعلان‌ها{% endblock %}
+{% block title %}
+اعلان‌ها
+{% endblock %}
 
 {% block content %}
-<h2>اعلان‌های شما</h2>
 
-<ul class="notification-list">
+<h2 style="margin-bottom:20px;">اعلان‌های شما</h2>
+
+<ul style="list-style:none; padding:0;">
     {% for n in notifications %}
-        <li class="{% if not n.is_read %}unread{% endif %}">
-            {{ n.message }}
-            <small>{{ n.created_at|date:"Y/m/d H:i" }}</small>
+        <li style=" --border-color: {% if not n.is_read %}#4f46e5{% else %}#e5e7eb{% endif %};
+         background: #fff;padding: 15px; border-radius: 10px; margin-bottom: 10px;border-right: 5px solid var(--border-color);">
+            <p style="margin-bottom:8px;">
+                {{ n.message }}
+            </p>
+
+            <small style="color:#6b7280;">
+                {{ n.created_at|date:"Y/m/d H:i" }}
+            </small>
+
+            {% if not n.is_read %}
+                <div style="margin-top:10px;">
+                    <a href="{% url 'mark_notification_read' n.id %}"
+                       class="btn btn-outline"
+                       style="font-size:13px;">
+                        علامت‌گذاری به‌عنوان خوانده‌شده
+                    </a>
+                </div>
+            {% endif %}
         </li>
     {% empty %}
-        <p>اعلانی وجود ندارد</p>
+        <p>اعلانی وجود ندارد.</p>
     {% endfor %}
 </ul>
+
 {% endblock %}
