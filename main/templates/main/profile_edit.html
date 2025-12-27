@@ -22,26 +22,45 @@
 <div class="profile-card">
     <h3>آدرس‌ها</h3>
 
+    <p style="font-size:13px; color:#555;">
+        در هر زمان فقط یک آدرس می‌تواند به‌عنوان پیش‌فرض انتخاب شود.
+    </p>
+
     {% if addresses %}
         <ul class="address-list">
             {% for address in addresses %}
                 <li>
                     {{ address.city }}، {{ address.street }}
+
                     {% if address.is_default %}
                         <span class="default-address">(پیش‌فرض)</span>
                     {% endif %}
-                    —
-                    <a href="{% url 'edit_address' address.id %}"class="btn btn-outline" style="font-size:12px;"> ویرایش</a>
 
+                    <div style="margin-top:8px;">
+                        <a href="{% url 'edit_address' address.id %}"
+                           class="btn btn-outline"
+                           style="font-size:12px;">
+                            ویرایش
+                        </a>
+
+                        <a href="{% url 'delete_address' address.id %}"
+                           class="btn btn-outline danger"
+                           style="font-size:12px;">
+                            حذف
+                        </a>
+                    </div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>آدرسی ثبت نشده است.</p>
+        <p class="empty-text">آدرسی ثبت نشده است.</p>
     {% endif %}
 
-    <a href="{% url 'add_address' %}"class="btn btn-primary" style="margin-top:20px;"> افزودن آدرس جدید</a>
-
+    <a href="{% url 'add_address' %}"
+       class="btn btn-primary"
+       style="margin-top:20px;">
+        افزودن آدرس جدید
+    </a>
 </div>
 
 <hr style="margin:40px 0;">
@@ -49,11 +68,16 @@
 <div class="profile-card">
     <h3>امنیت حساب</h3>
 
+    <p style="font-size:13px; color:#555;">
+        برای تغییر رمز عبور، لینک به ایمیل شما ارسال خواهد شد.
+    </p>
+
     <a href="{% url 'password_reset' %}" class="btn btn-outline">
         تغییر رمز عبور
     </a>
 </div>
 
 {% endblock %}
+
 
 

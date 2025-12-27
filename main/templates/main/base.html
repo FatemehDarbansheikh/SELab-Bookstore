@@ -6,9 +6,10 @@
     <title>{% block title %}کتاب‌ فروشی{% endblock %}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/vazirmatn@latest/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
@@ -16,8 +17,8 @@
 <header class="header">
     <div class="container header-content">
 
-        <a href="{% url 'home' %}" class="logo">
-            📚 کتاب‌ فروشی
+        <a href="{% url 'home' %}" class="logo"><i class="ri-book-2-fill"></i>
+           کتاب‌ فروشی
         </a>
 
         <nav class="nav">
@@ -27,9 +28,14 @@
                 <a href="{% url 'cart' %}">سبد خرید</a>
                 <a href="{% url 'wishlist' %}">علاقه‌مندی‌ها</a>
                 <a href="{% url 'order_history' %}">سفارش‌ها</a>
+
                 <a href="{% url 'notifications' %}">
                     اعلان‌ها
+                    {% if unread_notifications_count > 0 %}
+                        <span class="badge">{{ unread_notifications_count }}</span>
+                    {% endif %}
                 </a>
+
                 <a href="{% url 'support_list' %}">پشتیبانی</a>
             {% endif %}
         </nav>

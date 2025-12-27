@@ -18,6 +18,7 @@ class Admin(models.Model):
         return f"{self.user.username} ({self.role})"
 
 
+
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
     country = models.CharField(max_length=50)
@@ -63,30 +64,39 @@ class Book(models.Model):
     stock_quantity = models.PositiveIntegerField()
     description = models.TextField(blank=True, null=True)
     publication_date = models.DateField(blank=True, null=True)
+
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     authors = models.ManyToManyField(Author)
     categories = models.ManyToManyField(Category)
-    admin = models.ForeignKey(Admin, on_delete=models.CASCADE, null=True, blank=True)
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.title
 
 
+
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    rating = models.IntegerField()
+    rating = models.PositiveSmallIntegerField()
     comment = models.TextField(blank=True, null=True)
     review_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.book.title} - {self.rating}/5"
+
 
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
         unique_together = ('user', 'book')
+
+    def __str__(self):
+        return f"{self.user} - {self.book} ({self.quantity})"
 
 
 class Wishlist(models.Model):
@@ -96,6 +106,10 @@ class Wishlist(models.Model):
 
     class Meta:
         unique_together = ('user', 'book')
+
+    def __str__(self):
+        return f"{self.user} - {self.book}"
+
 
 
 class Order(models.Model):
@@ -108,21 +122,31 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE)
-    admin = models.ForeignKey(Admin, on_delete=models.CASCADE, null=True, blank=True)
+    address = models.ForeignKey(Address, on_delete=models.PROTECT)
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
+
     total_amount = models.PositiveIntegerField(help_text="مبلغ کل به تومان")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     order_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-order_date']
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.user.username}"
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
     unit_price = models.PositiveIntegerField(help_text="قیمت واحد به تومان")
-    
+
     class Meta:
         unique_together = ('order', 'book')
+
+    def __str__(self):
+        return f"{self.book.title} x {self.quantity}"
 
 
 class Payment(models.Model):
@@ -132,23 +156,51 @@ class Payment(models.Model):
     transaction_status = models.CharField(max_length=30)
     payment_date = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Payment #{self.id} - {self.amount}"
+
 
 class Support(models.Model):
+    STATUS_CHOICES = [
+        ('open', 'باز'),
+        ('answered', 'پاسخ داده شده'),
+        ('closed', 'بسته شده'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
+
     subject = models.CharField(max_length=150)
     message = models.TextField()
-    status = models.CharField(max_length=30)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.subject
+
 
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True)
+
     message = models.CharField(max_length=255)
     type = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.message
+
+
+
+
 
 
 
