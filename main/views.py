@@ -454,7 +454,7 @@ def chatbot_api(request):
         response = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "Authorization": "Bearer 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",
+                "Authorization": "Bearer ",
                 "Content-Type": "application/json",
             },
             json={
