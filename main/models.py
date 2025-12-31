@@ -118,7 +118,7 @@ class Order(models.Model):
         ('paid', 'پرداخت شده'),
         ('shipped', 'ارسال شده'),
         ('delivered', 'تحویل داده شده'),
-        ('canceled', 'لغو شده'),
+        ('cancelled', 'لغو شده'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)

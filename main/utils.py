@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.html import strip_tags
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,3 +31,8 @@ def send_notification_email(subject, message, recipient):
     except Exception as e:
         logger.error(f'خطا در ارسال ایمیل به {recipient}: {e}')
         return False
+
+
+
+
+

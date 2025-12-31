@@ -6,6 +6,15 @@ from django.db.models import Q, Avg
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+import requests
+
+
+
+
+
 from .models import (
     User, Address, Category, Book,
     Review, Cart, Wishlist,
@@ -21,8 +30,10 @@ def home_view(request):
     categories = Category.objects.all()
     return render(request, 'main/home.html', {
         'books': books,
-        'categories': categories
+        'categories': categories,
     })
+
+
 
 
 def signup_view(request):
@@ -271,16 +282,6 @@ def order_detail_view(request, order_id):
 
 
 @login_required
-def cancel_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    if order.status in ['pending', 'paid']:
-        order.status = 'canceled'
-        order.save()
-    return redirect('order_history')
-
-
-
-@login_required
 def profile_view(request):
     return render(request, 'main/profile.html')
 
@@ -420,7 +421,6 @@ def support_list(request):
     return render(request, 'main/support_list.html', {'supports': supports})
 
 
-
 @login_required
 def delete_account(request):
     if request.method == 'POST':
@@ -431,4 +431,84 @@ def delete_account(request):
         return redirect('home')
 
     return render(request, 'main/delete_account.html')
+
+
+
+
+
+
+
+
+@csrf_exempt
+def chatbot_api(request):
+    if request.method != "POST":
+        return JsonResponse({"reply": "درخواست نامعتبر است."})
+
+    data = json.loads(request.body)
+    user_message = data.get("message")
+
+    if not user_message:
+        return JsonResponse({"reply": "پیامی دریافت نشد."})
+
+    try:
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": "Bearer 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",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "deepseek/deepseek-r1-0528:free",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "تو دستیار سایت کتاب‌فروشی هستی و فقط درباره کتاب‌ها و استفاده از سایت پاسخ می‌دهی."
+                    },
+                    {
+                        "role": "user",
+                        "content": user_message
+                    }
+                ],
+            },
+            timeout=30
+        )
+
+        result = response.json()
+
+        if "error" in result:
+            return JsonResponse({
+                "reply": "در حال حاضر امکان پاسخ‌گویی وجود ندارد. لطفاً بعداً تلاش کنید."
+            })
+
+        reply = result["choices"][0]["message"]["content"]
+        return JsonResponse({"reply": reply})
+
+    except Exception as e:
+        return JsonResponse({
+            "reply": "خطای داخلی در پردازش درخواست."
+        })
+
+
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.status in ['shipped', 'delivered']:
+        messages.error(request, "امکان لغو سفارش پس از ارسال وجود ندارد.")
+        return redirect('order_detail', order_id=order.id)
+
+    if order.status == 'cancelled':
+        messages.info(request, "این سفارش قبلاً لغو شده است.")
+        return redirect('order_detail', order_id=order.id)
+
+    order.status = 'cancelled'
+    order.save()
+
+    messages.success(request, "سفارش با موفقیت لغو شد.")
+    return redirect('order_detail', order_id=order.id)
+
+
+
+
 

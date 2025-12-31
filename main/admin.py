@@ -4,6 +4,8 @@ from .models import (
     Review, Cart, Wishlist, Order, OrderItem, Payment, Support, Notification
 )
 
+from django.db.models import Sum
+
 admin.site.register(User)
 admin.site.register(Admin)
 admin.site.register(Address)
@@ -19,4 +21,3 @@ admin.site.register(OrderItem)
 admin.site.register(Payment)
 admin.site.register(Support)
 admin.site.register(Notification)
-

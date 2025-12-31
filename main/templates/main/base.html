@@ -3,9 +3,9 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}کتاب‌ فروشی{% endblock %}</title>
+    <title>{% block title %}کتاب‌ فروشی {% endblock %}</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/vazirmatn@latest/dist/font-face.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
 
@@ -18,7 +18,7 @@
     <div class="container header-content">
 
         <a href="{% url 'home' %}" class="logo"><i class="ri-book-2-fill"></i>
-           کتاب‌ فروشی
+            کتاب‌ فروشی 
         </a>
 
         <nav class="nav">
@@ -82,13 +82,86 @@
     </div>
 </main>
 
+
+
+
+<div id="chatbot-toggle">
+    💬
+</div>
+
+<div id="chatbot-box" class="hidden">
+    <div class="chatbot-header">
+        <span>دستیار هوشمند کتاب‌فروشی</span>
+        <button id="chatbot-close">✖</button>
+    </div>
+
+    <div id="chatbot-messages">
+        <div class="bot-message">
+            سلام 👋  
+            هر سوالی درباره کتاب‌ها، خرید یا پیشنهاد مطالعه داری بپرس.
+        </div>
+    </div>
+
+    <form id="chatbot-form">
+        <input type="text" id="chatbot-input" placeholder="سؤال خود را بنویسید..." required>
+        <button type="submit">ارسال</button>
+    </form>
+</div>
+
+
+
+
 <footer class="footer">
-    <div class="container footer-content">
-        <p>© 1404 | پروژه وب اپلیکیشن کتاب‌ فروشی</p>
+    <div class="container footer-grid">
+
+        <div class="footer-section">
+            <h4>درباره ما</h4>
+            <p>
+                فروشگاه آنلاین کتاب با هدف فراهم‌کردن دسترسی آسان
+                به بهترین کتاب‌های فارسی و خارجی راه‌اندازی شده است.
+            </p>
+        </div>
+
+        <div class="footer-section">
+            <h4>دسترسی سریع</h4>
+            <ul>
+                <li><a href="{% url 'home' %}">صفحه اصلی</a></li>
+                <li><a href="{% url 'book_list' %}">کتاب‌ها</a></li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'cart' %}">سبد خرید</a></li>
+                    <li><a href="{% url 'order_history' %}">سفارش‌ها</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">ورود</a></li>
+                    <li><a href="{% url 'signup' %}">ثبت‌نام</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>تماس با ما</h4>
+            <p> ایمیل: support@bookstore.ir</p>
+            <p> تلفن: 021-12345678</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 1404 | پروژه وب اپلیکیشن کتاب‌ فروشی
     </div>
 </footer>
 
-<script src="{% static 'main/js/main.js' %}"></script>
-</body>
-</html>
 
+
+<div id="page-loader">
+    <div class="loader"></div>
+</div>
+
+
+
+
+
+<script src="{% static 'main/js/main.js' %}"></script>
+
+</body>
+</htm>
