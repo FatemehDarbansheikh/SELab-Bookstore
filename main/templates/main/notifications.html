@@ -1,30 +1,28 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-اعلان‌ها
+اعلان‌ها | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<h2 style="margin-bottom:20px;">اعلان‌های شما</h2>
+<h2 class="page-title">اعلان‌های شما</h2>
 
-<ul style="list-style:none; padding:0;">
+<ul class="notification-list">
     {% for n in notifications %}
-        <li style=" --border-color: {% if not n.is_read %}#4f46e5{% else %}#e5e7eb{% endif %};
-         background: #fff;padding: 15px; border-radius: 10px; margin-bottom: 10px;border-right: 5px solid var(--border-color);">
-            <p style="margin-bottom:8px;">
+        <li class="notification-item {% if not n.is_read %}unread{% else %}read{% endif %}">
+            <p class="notification-message">
                 {{ n.message }}
             </p>
 
-            <small style="color:#6b7280;">
+            <small class="notification-date">
                 {{ n.created_at|date:"Y/m/d H:i" }}
             </small>
 
             {% if not n.is_read %}
-                <div style="margin-top:10px;">
+                <div class="notification-action">
                     <a href="{% url 'mark_notification_read' n.id %}"
-                       class="btn btn-outline"
-                       style="font-size:13px;">
+                       class="btn btn-outline notification-btn">
                         علامت‌گذاری به‌عنوان خوانده‌شده
                     </a>
                 </div>

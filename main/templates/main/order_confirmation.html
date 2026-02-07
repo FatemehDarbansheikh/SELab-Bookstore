@@ -1,21 +1,28 @@
 {% extends 'main/base.html' %}
 
-{% block title %}تأیید سفارش{% endblock %}
+{% block title %}
+تایید سفارش | کتاب‌فروشی 
+{% endblock %}
 
 {% block content %}
-<h2>سفارش شما با موفقیت ثبت شد ✅</h2>
+<div class="confirmation-box">
+    <h2 class="confirmation-title">
+        سفارش شما با موفقیت ثبت شد 
+    </h2>
 
-<p>
-    شماره سفارش:
-    <strong>{{ order.id }}</strong>
-</p>
+    <p class="confirmation-item">
+        شماره سفارش:
+        <strong>{{ order.id }}</strong>
+    </p>
 
-<p>
-    مبلغ پرداخت‌ شده:
-    <strong>{{ order.total_amount }} تومان</strong>
-</p>
+    <p class="confirmation-item">
+        مبلغ پرداخت‌ شده:
+        <strong>{{ order.total_amount }} تومان</strong>
+    </p>
 
-<a href="{% url 'order_history' %}" class="btn-primary">
-    مشاهده سفارش‌ها
-</a>
+    <a href="{% url 'order_history' %}" class="btn btn-primary">
+        مشاهده سفارش‌ها
+    </a>
+</div>
 {% endblock %}
+
