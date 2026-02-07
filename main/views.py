@@ -11,10 +11,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import requests
 
-
-
-
-
 from .models import (
     User, Address, Category, Book,
     Review, Cart, Wishlist,
@@ -27,13 +23,13 @@ from .utils import send_notification_email
 
 def home_view(request):
     books = Book.objects.all().order_by('-id')[:8]
+    recommended_books = Book.objects.all().order_by('?')[:4]
     categories = Category.objects.all()
     return render(request, 'main/home.html', {
         'books': books,
+        'recommended_books': recommended_books,
         'categories': categories,
     })
-
-
 
 
 def signup_view(request):
@@ -57,7 +53,7 @@ def signup_view(request):
         )
 
         login(request, user)
-        messages.success(request, 'ثبت‌نام با موفقیت انجام شد.')
+        messages.success(request, 'ثبت‌ نام با موفقیت انجام شد.')
         return redirect('home')
 
     return render(request, 'main/signup.html')
@@ -88,6 +84,7 @@ def logout_view(request):
 
 
 def book_list_view(request):
+
     books = Book.objects.all()
     q = request.GET.get('q')
     category = request.GET.get('category')
@@ -97,8 +94,12 @@ def book_list_view(request):
         books = books.filter(
             Q(title__icontains=q) |
             Q(authors__first_name__icontains=q) |
-            Q(authors__last_name__icontains=q)
+            Q(authors__last_name__icontains=q) |
+            Q(authors__first_name__icontains=q.split()[0]) & 
+            Q(authors__last_name__icontains=q.split()[-1]) if len(q.split()) > 1 else Q()
+
         ).distinct()
+
 
     if category:
         books = books.filter(categories__id=category)
@@ -249,7 +250,7 @@ def online_payment(request, order_id):
         )
 
         send_notification_email(
-            'تأیید ثبت سفارش',
+            'تایید ثبت سفارش',
             f'سفارش شما با شماره {order.id} با موفقیت ثبت شد.',
             request.user.email
         )
@@ -434,11 +435,6 @@ def delete_account(request):
 
 
 
-
-
-
-
-
 @csrf_exempt
 def chatbot_api(request):
     if request.method != "POST":
@@ -454,7 +450,7 @@ def chatbot_api(request):
         response = requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "Authorization": "Bearer ",
+                "Authorization": "-",
                 "Content-Type": "application/json",
             },
             json={
@@ -477,7 +473,7 @@ def chatbot_api(request):
 
         if "error" in result:
             return JsonResponse({
-                "reply": "در حال حاضر امکان پاسخ‌گویی وجود ندارد. لطفاً بعداً تلاش کنید."
+                "reply": "در حال حاضر امکان پاسخ‌گویی وجود ندارد. لطفا بعدا تلاش کنید."
             })
 
         reply = result["choices"][0]["message"]["content"]
@@ -499,7 +495,7 @@ def cancel_order(request, order_id):
         return redirect('order_detail', order_id=order.id)
 
     if order.status == 'cancelled':
-        messages.info(request, "این سفارش قبلاً لغو شده است.")
+        messages.info(request, "این سفارش قبلا لغو شده است.")
         return redirect('order_detail', order_id=order.id)
 
     order.status = 'cancelled'
