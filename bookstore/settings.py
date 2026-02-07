@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hx*8)wmdw@lv!rb2()c@@x-6ucme)1^v)zoh79=f(hovt^d3g0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -112,8 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
+LANGUAGE_CODE = 'fa-ir'
 
 TIME_ZONE = 'Asia/Tehran'
 
@@ -150,4 +148,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'bookstore@gmail.com'
 
 
-OPENROUTER_API_KEY = ""
+OPENROUTER_API_KEY = "-"
