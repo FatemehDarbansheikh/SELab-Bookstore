@@ -1,12 +1,12 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-علاقه‌مندی‌ها | کتاب‌ فروشی 
+علاقه‌مندی‌ها | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<h2 style="margin-bottom:20px;">علاقه‌مندی‌های من</h2>
+<h2 class="page-title">علاقه‌مندی‌های من</h2>
 
 {% if items %}
     <div class="book-grid">
@@ -19,15 +19,10 @@
                     <img src="https://via.placeholder.com/300x400?text=Book">
                 {% endif %}
 
-                <div class="book-title">
-                    {{ item.book.title }}
-                </div>
+                <div class="book-title">{{ item.book.title }}</div>
+                <div class="book-price">{{ item.book.price }} تومان</div>
 
-                <div class="book-price">
-                    {{ item.book.price }} تومان
-                </div>
-
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <div class="wishlist-actions">
                     <a href="{% url 'book_detail' item.book.id %}"
                        class="btn btn-primary">
                         مشاهده
@@ -43,7 +38,10 @@
         {% endfor %}
     </div>
 {% else %}
-    <p>هیچ کتابی به علاقه‌مندی‌ها اضافه نشده است.</p>
+    <p class="empty-state">
+        هیچ کتابی به علاقه‌مندی‌ها اضافه نشده است.
+    </p>
 {% endif %}
 
 {% endblock %}
+
