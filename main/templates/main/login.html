@@ -1,7 +1,7 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-ورود | کتاب‌ فروشی
+ورود | کتاب‌‌فروشی
 {% endblock %}
 
 {% block content %}
@@ -28,15 +28,15 @@
         </button>
     </form>
 
-    <p style="margin-top:15px; text-align:center; font-size:14px;">
+    <p class="auth-hint">
         حساب کاربری ندارید؟
-        <a href="{% url 'signup' %}" style="color:#4f46e5;">
+        <a href="{% url 'signup' %}">
             ثبت‌ نام کنید
         </a>
     </p>
 
-    <p style="margin-top:10px; text-align:center; font-size:14px;">
-        <a href="{% url 'password_reset' %}" style="color:#4f46e5;">
+    <p class="auth-hint">
+        <a href="{% url 'password_reset' %}">
             رمز عبور خود را فراموش کرده‌اید؟
         </a>
     </p>
