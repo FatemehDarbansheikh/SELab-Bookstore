@@ -1,13 +1,15 @@
 {% extends 'main/base.html' %}
 
-{% block title %}حذف حساب کاربری{% endblock %}
+{% block title %}
+  حذف حساب کاربری | کتاب‌فروشی 
+  {% endblock %}
 
 {% block content %}
 <div class="auth-container danger">
     <h2>حذف حساب کاربری</h2>
 
-    <p style="color:#b91c1c;">
-        ⚠️ هشدار: با حذف حساب، تمام اطلاعات شما به‌طور دائم حذف خواهد شد
+    <p class="delete-warning review-card">
+         هشدار: با حذف حساب، تمام اطلاعات شما به‌طور دائم حذف خواهد شد
         و این عملیات قابل بازگشت نیست.
     </p>
 
