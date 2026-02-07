@@ -8,6 +8,7 @@ pymysql = "*"
 django = "*"
 mssql-django = "*"
 pyodbc = "*"
+requests = "*"
 
 [dev-packages]
 
