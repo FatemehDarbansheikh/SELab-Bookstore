@@ -1,20 +1,20 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-لیست کتاب‌ها | کتاب‌ فروشی 
+لیست کتاب‌ها | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<h2 style="margin-bottom:20px;">کتاب‌ها</h2>
+<h2 class="page-title">کتاب‌ها</h2>
 
-<form method="get" style="margin-bottom:30px; display:flex; flex-wrap:wrap; gap:10px;">
+<form method="get" class="book-filter-form">
 
     <input type="text"
            name="q"
-           placeholder="جستجوی کتاب..."
+           placeholder="جستجوی کتاب و نویسنده..."
            value="{{ request.GET.q }}"
-           style="flex:1; min-width:200px;">
+           class="search-input">
 
     <select name="category">
         <option value="">همه دسته‌بندی‌ها</option>
@@ -47,33 +47,29 @@
 </form>
 
 {% if books %}
-    <div class="book-grid">
-        {% for book in books %}
-            <div class="book-card">
+        <div class="book-grid">
+            {% for book in books %}
+                <div class="book-card">
+                    {% if book.cover %}
+                        <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x400?text=Book" alt="Book">
+                    {% endif %}
 
-                {% if book.cover %}
-                    <img src="{{ book.cover.url }}" alt="{{ book.title }}">
-                {% else %}
-                    <img src="https://via.placeholder.com/400x550?text=Book">
-                {% endif %}
+                    <div class="book-title">{{ book.title }}</div>
+                    <div class="book-mata">{% for author in book.authors.all %}
+                        {{ author.first_name }} {{ author.last_name }}{% if not forloop.last %}،{% endif %}
+                        {% endfor %}</div>
+                    <div class="book-price">{{ book.price }} تومان</div>
 
-                <div class="book-title">
-                    {{ book.title }}
+                    <a href="{% url 'book_detail' book.id %}" class="btn btn-primary">
+                     مشاهده جزئیات
+                    </a>
                 </div>
-
-                <div class="book-price">
-                    {{ book.price }} تومان
-                </div>
-
-                <a href="{% url 'book_detail' book.id %}" class="btn btn-primary">
-                    مشاهده جزئیات
-                </a>
-
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <p>کتابی یافت نشد.</p>
-{% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>کتابی برای نمایش وجود ندارد.</p>
+    {% endif %}
 
 {% endblock %}
