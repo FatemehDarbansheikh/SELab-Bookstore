@@ -1,16 +1,26 @@
 {% extends 'main/base.html' %}
 
-{% block title %}پرداخت آنلاین{% endblock %}
+{% block title %}
+پرداخت آنلاین | کتاب‌‌فروشی
+{% endblock %}
 
 {% block content %}
-<h2>پرداخت سفارش</h2>
+<div class="confirmation-box payment-box">
+    <h2 class="confirmation-title">
+        پرداخت سفارش
+    </h2>
 
-<p>مبلغ قابل پرداخت: <strong>{{ order.total_amount }} تومان</strong></p>
+    <p class="confirmation-item">
+        مبلغ قابل پرداخت:
+        <strong>{{ order.total_amount }} تومان</strong>
+    </p>
 
-<form method="post">
-    {% csrf_token %}
-    <button class="btn-primary">
-        پرداخت آنلاین
-    </button>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">
+            پرداخت آنلاین
+        </button>
+    </form>
+</div>
 {% endblock %}
+

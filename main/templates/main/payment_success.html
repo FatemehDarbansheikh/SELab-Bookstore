@@ -1,7 +1,22 @@
 {% extends 'main/base.html' %}
 
-{% block content %}
-<h2>پرداخت با موفقیت انجام شد ✅</h2>
-<p>سفارش شما ثبت شد.</p>
-<a href="{% url 'orders' %}">مشاهده سفارش‌ها</a>
+{% block title %}
+پرداخت موفق | کتاب‌ فروشی
 {% endblock %}
+
+{% block content %}
+<div class="confirmation-box payment-success">
+    <h2 class="confirmation-title">
+        پرداخت با موفقیت انجام شد 
+    </h2>
+
+    <p class="confirmation-item">
+        سفارش شما با موفقیت ثبت شد و در حال پردازش است.
+    </p>
+
+    <a href="{% url 'order_history' %}" class="btn btn-primary">
+        مشاهده سفارش‌ها
+    </a>
+</div>
+{% endblock %}
+
