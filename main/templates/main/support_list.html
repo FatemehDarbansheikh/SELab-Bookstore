@@ -1,52 +1,57 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-درخواست‌های پشتیبانی
+درخواست‌های پشتیبانی | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-    <h2>درخواست‌های پشتیبانی من</h2>
+<div class="page-header">
+    <h2 class="page-title">درخواست‌های پشتیبانی من</h2>
 
     <a href="{% url 'create_support' %}" class="btn btn-primary">
         ثبت درخواست جدید
     </a>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>موضوع</th>
-            <th>وضعیت</th>
-            <th>تاریخ</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for s in supports %}
-        <tr>
-            <td>{{ s.subject }}</td>
-            <td>
-                {% if s.status == 'open' %}
-                    <span style="color:#f59e0b;">در انتظار پاسخ</span>
-                {% elif s.status == 'answered' %}
-                    <span style="color:#16a34a;">پاسخ داده شده</span>
-                {% else %}
-                    <span style="color:#dc2626;">بسته شده</span>
-                {% endif %}
-            </td>
-            <td>{{ s.created_at|date:"Y/m/d H:i" }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">درخواستی ثبت نشده است.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% if supports %}
+<div class="table-wrapper">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>موضوع</th>
+                <th>وضعیت</th>
+                <th>تاریخ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in supports %}
+            <tr>
+                <td>{{ s.subject }}</td>
+                <td>
+                    <span class="support-status {{ s.status }}">
+                        {% if s.status == 'open' %}
+                            در انتظار پاسخ
+                        {% elif s.status == 'answered' %}
+                            پاسخ داده شده
+                        {% else %}
+                            بسته شده
+                        {% endif %}
+                    </span>
+                </td>
+                <td>{{ s.created_at|date:"Y/m/d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty-state">درخواستی ثبت نشده است.</p>
+{% endif %}
 
-<p style="margin-top:15px; font-size:14px; color:#555;">
+<p class="support-hint">
     پاسخ ادمین از طریق بخش <strong>اعلان‌ها</strong> ارسال می‌شود.
 </p>
 
 {% endblock %}
+

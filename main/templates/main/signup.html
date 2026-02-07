@@ -1,12 +1,12 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-ثبت‌ نام | کتاب‌ فروشی
+ثبت‌ نام | کتاب‌فروشی
 {% endblock %}
 
 {% block content %}
 
-<div class="form-box">
+<div class="form-box auth-form signup-form">
     <h2>ایجاد حساب کاربری</h2>
 
     <form method="post">
@@ -32,9 +32,9 @@
         </button>
     </form>
 
-    <p style="margin-top:15px; text-align:center; font-size:14px;">
-        قبلاً ثبت‌نام کرده‌اید؟
-        <a href="{% url 'login' %}" style="color:#4f46e5;">
+    <p class="auth-footer-text">
+        قبلا ثبت‌ نام کرده‌اید؟
+        <a href="{% url 'login' %}" class="auth-link">
             وارد شوید
         </a>
     </p>
