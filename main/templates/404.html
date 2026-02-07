@@ -1,16 +1,16 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-صفحه پیدا نشد
+صفحه پیدا نشد | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<div style="text-align:center; margin-top:60px;">
-    <h1 style="font-size:48px; color:#ef4444;">404</h1>
-    <h2 style="margin:15px 0;">صفحه مورد نظر یافت نشد</h2>
+<div class="error-page">
+    <h1 class="error-code">404</h1>
+    <h2 class="error-title">صفحه مورد نظر یافت نشد</h2>
 
-    <p style="color:#555; margin-bottom:25px;">
+    <p class="error-text">
         ممکن است آدرس را اشتباه وارد کرده باشید یا صفحه حذف شده باشد.
     </p>
 
@@ -20,3 +20,4 @@
 </div>
 
 {% endblock %}
+
