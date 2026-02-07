@@ -3,7 +3,7 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}کتاب‌ فروشی {% endblock %}</title>
+    <title>{% block title %}کتاب‌فروشی {% endblock %}</title>
 
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -13,12 +13,11 @@
 </head>
 
 <body>
-
 <header class="header">
     <div class="container header-content">
 
         <a href="{% url 'home' %}" class="logo"><i class="ri-book-2-fill"></i>
-            کتاب‌ فروشی 
+           کتاب‌‌فروشی 
         </a>
 
         <nav class="nav">
@@ -28,41 +27,26 @@
                 <a href="{% url 'cart' %}">سبد خرید</a>
                 <a href="{% url 'wishlist' %}">علاقه‌مندی‌ها</a>
                 <a href="{% url 'order_history' %}">سفارش‌ها</a>
-
                 <a href="{% url 'notifications' %}">
                     اعلان‌ها
                     {% if unread_notifications_count > 0 %}
                         <span class="badge">{{ unread_notifications_count }}</span>
                     {% endif %}
                 </a>
-
                 <a href="{% url 'support_list' %}">پشتیبانی</a>
             {% endif %}
         </nav>
 
         <div class="auth">
             {% if user.is_authenticated %}
-                <span class="username">
-                    سلام {{ user.username }}
-                </span>
-
-                <a href="{% url 'profile' %}" class="btn btn-outline">
-                    پروفایل
-                </a>
-
-                <a href="{% url 'logout' %}" class="btn btn-outline">
-                    خروج
-                </a>
+                <span class="username">سلام {{ user.username }} </span>
+                <a href="{% url 'profile' %}" class="btn btn-outline">پروفایل</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline">خروج</a>
             {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline">
-                    ورود
-                </a>
-                <a href="{% url 'signup' %}" class="btn btn-primary">
-                    ثبت‌ نام
-                </a>
+                <a href="{% url 'login' %}" class="btn btn-outline">ورود</a>
+                <a href="{% url 'signup' %}" class="btn btn-primary">ثبت نام </a>
             {% endif %}
         </div>
-
     </div>
 </header>
 
@@ -76,13 +60,12 @@
 </div>
 {% endif %}
 
+
 <main class="main">
     <div class="container">
         {% block content %}{% endblock %}
     </div>
 </main>
-
-
 
 
 <div id="chatbot-toggle">
@@ -97,18 +80,16 @@
 
     <div id="chatbot-messages">
         <div class="bot-message">
-            سلام 👋  
+            سلام 👋
             هر سوالی درباره کتاب‌ها، خرید یا پیشنهاد مطالعه داری بپرس.
         </div>
     </div>
 
     <form id="chatbot-form">
-        <input type="text" id="chatbot-input" placeholder="سؤال خود را بنویسید..." required>
+        <input type="text" id="chatbot-input" placeholder="سوال خود را بنویسید..." required>
         <button type="submit">ارسال</button>
     </form>
 </div>
-
-
 
 
 <footer class="footer">
@@ -117,7 +98,7 @@
         <div class="footer-section">
             <h4>درباره ما</h4>
             <p>
-                فروشگاه آنلاین کتاب با هدف فراهم‌کردن دسترسی آسان
+                کتاب‌فروشی با هدف فراهم‌کردن دسترسی آسان
                 به بهترین کتاب‌های فارسی و خارجی راه‌اندازی شده است.
             </p>
         </div>
@@ -133,35 +114,30 @@
                     <li><a href="{% url 'order_history' %}">سفارش‌ها</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">ورود</a></li>
-                    <li><a href="{% url 'signup' %}">ثبت‌نام</a></li>
+                    <li><a href="{% url 'signup' %}">ثبت نام</a></li>
                 {% endif %}
             </ul>
         </div>
 
         <div class="footer-section">
             <h4>تماس با ما</h4>
-            <p> ایمیل: support@bookstore.ir</p>
-            <p> تلفن: 021-12345678</p>
+            <p> ایمیل: bookstore@gmail.com</p>
+            <p> تلفن: 45903156-013</p>
         </div>
 
     </div>
 
     <div class="footer-bottom">
-        © 1404 | پروژه وب اپلیکیشن کتاب‌ فروشی
+        © 1404 | پروژه وب اپلیکیشن کتاب‌فروشی
     </div>
 </footer>
-
 
 
 <div id="page-loader">
     <div class="loader"></div>
 </div>
 
-
-
-
-
 <script src="{% static 'main/js/main.js' %}"></script>
 
 </body>
-</htm>
+</html>
