@@ -6,7 +6,6 @@ from .models import Support, Address
 
 User = get_user_model()
 
-
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = User
