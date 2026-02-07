@@ -2,16 +2,16 @@
 {% load math_filters %}
 
 {% block title %}
-ثبت سفارش | کتاب‌ فروشی 
+ثبت سفارش | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<h2 style="margin-bottom:20px;">بررسی سفارش</h2>
+<h2 class="page-title">بررسی سفارش</h2>
 
 {% if cart_items %}
 
-<table class="table">
+<table class="table checkout-table">
     <thead>
         <tr>
             <th>کتاب</th>
@@ -32,13 +32,13 @@
     </tbody>
 </table>
 
-<div style="margin-top:20px; text-align:left;">
+<div class="checkout-summary">
     <strong>مبلغ نهایی:</strong>
     {{ cart_items|length }} کالا |
     {{ cart_items.0.book.price|multiply:cart_items.0.quantity|add:0 }} تومان
 </div>
 
-<form method="post" style="margin-top:30px;">
+<form method="post" class="checkout-form">
     {% csrf_token %}
 
     <label>انتخاب آدرس ارسال:</label>
@@ -50,7 +50,7 @@
         {% endfor %}
     </select>
 
-    <button class="btn btn-primary" style="margin-top:20px;">
+    <button class="btn btn-primary checkout-submit">
         ثبت سفارش
     </button>
 </form>

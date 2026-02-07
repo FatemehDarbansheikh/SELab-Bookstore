@@ -2,15 +2,15 @@
 {% load math_filters %}
 
 {% block title %}
-سبد خرید | کتاب‌ فروشی
+سبد خرید | کتاب‌‌فروشی
 {% endblock %}
 
 {% block content %}
 
-<h2 style="margin-bottom:20px;">سبد خرید</h2>
+<h2 class="page-title">سبد خرید</h2>
 
 {% if cart_items %}
-<table class="table">
+<table class="table cart-table">
     <thead>
         <tr>
             <th>کتاب</th>
@@ -32,10 +32,10 @@
             <td>
                 <form method="post"
                       action="{% url 'update_cart_quantity' item.id %}"
-                      style="display:flex; justify-content:center; align-items:center; gap:8px;">
+                      class="quantity-form">
                     {% csrf_token %}
                     <button name="action" value="decrease" class="btn btn-outline">−</button>
-                    <span>{{ item.quantity }}</span>
+                    <span class="quantity-number">{{ item.quantity }}</span>
                     <button name="action" value="increase" class="btn btn-outline">+</button>
                 </form>
             </td>
@@ -55,14 +55,13 @@
     </tbody>
 </table>
 
-<div style="margin-top:20px; text-align:left;">
+<div class="cart-summary">
     <strong>مبلغ نهایی:</strong>
     {{ total_price }} تومان
 </div>
 
 <a href="{% url 'checkout' %}"
-   class="btn btn-primary"
-   style="margin-top:20px;">
+   class="btn btn-primary checkout-btn">
     ادامه فرآیند خرید
 </a>
 
