@@ -1,17 +1,17 @@
 {% extends 'main/base.html' %}
 
 {% block title %}
-خطای سرور
+خطای سرور | کتاب‌فروشی 
 {% endblock %}
 
 {% block content %}
 
-<div style="text-align:center; margin-top:60px;">
-    <h1 style="font-size:48px; color:#f59e0b;">500</h1>
-    <h2 style="margin:15px 0;">خطایی رخ داده است</h2>
+<div class="error-page">
+    <h1 class="error-code warning">500</h1>
+    <h2 class="error-title">خطایی رخ داده است</h2>
 
-    <p style="color:#555; margin-bottom:25px;">
-        متأسفانه مشکلی در سرور به وجود آمده است. لطفاً بعدا دوباره تلاش کنید.
+    <p class="error-text">
+        متاسفانه مشکلی در سرور به وجود آمده است. لطفا بعدا دوباره تلاش کنید.
     </p>
 
     <a href="{% url 'home' %}" class="btn btn-outline">
@@ -20,3 +20,4 @@
 </div>
 
 {% endblock %}
+
